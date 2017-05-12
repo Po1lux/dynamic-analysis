@@ -13,22 +13,18 @@ denyConut =3
 denyInterval = 120
 
 def print_line(content):
-    result = re.findall(pattern, content)
-    if len(result[0]==5):
+    if type == 'VPN_AUTH':
+        result = re.findall(pattern, content)
         name = result[0][2]
         ip = result[0][4]
         time = result[0][0]
         state = result[0][1]
         type = result[0][3]
-    else:
-        return
 
-    referIp = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=%s' % ip
-    html = urllib2.urlopen(referIp)
-    html = h.read()
-    location = re.findall('\"city\":\"(.*?)\"', html)
-
-    if type == 'VPN_AUTH':
+        referIp = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=%s' % ip
+        h = urllib2.urlopen(referIp)
+        html = h.read()
+        location = re.findall('\"city\":\"(.*?)\"', html)
         cTime = time.time()
         dictObjInfo = {name:
                        {'loca': location,
@@ -40,6 +36,7 @@ def print_line(content):
                         }}
         #login success
         if state == 'success':
+            print dictObjInfo
             with open(r'./info.json','r') as f:
                 info = json.load(f)
                 #type(info[dictName]['loca'].encode("utf-8"))   unicode to str
@@ -52,6 +49,7 @@ def print_line(content):
 
         #login failed
         if state == 'fail' and ip in ipInfo.keys():
+            print 'fail1'
             ipInfo[ip]['tConut'] = ipInfo[ip]['tConut']+1
             #exist burte force attack
             if cTime-ipInfo[ip]['lTime'] < denyInterval and ipInfo[ip]['tCount'] > denyConut:
@@ -63,6 +61,7 @@ def print_line(content):
                 ipInfo[ip]['lTime'] = cTime
         #update dictObjIp
         elif state == 'fail' and ip not in ipInfo.keys():
+            print 'fail2'
             dictObjIp = {ip:
                              {
                                  'lTime':cTime,
@@ -74,6 +73,6 @@ def print_line(content):
 
 t = tail.Tail('/var/log/syslog')
 t.register_callback(print_line)
-t.follow(s=1)
+t.follow(s=2)
 
 
