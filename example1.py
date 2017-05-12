@@ -4,16 +4,17 @@ import tail
 import re
 import time
 import urllib2
-
-com = r'(\d{2}:\d{2}:\d{2})[\s\S]*auth-(\w+)[\s\S]*user \'(\w+)\'[\s\S]*auth profile \'(\w+)\'[\s\S]*From: (\d+.\d+.\d+.\d+)'
-pattern = re.compile(com)
+com0 = r'VPN_AUH'
+com1 = r'(\d{2}:\d{2}:\d{2})[\s\S]*auth-(\w+)[\s\S]*user \'(\w+)\'[\s\S]*auth profile \'(\w+)\'[\s\S]*From: (\d+.\d+.\d+.\d+)'
+pattern0 = re.compile(com0)
+pattern1 = re.compile(com1)
 
 ipInfo={}
 denyConut =3
 denyInterval = 120
 
 def print_line(content):
-    if type == 'VPN_AUTH':
+    if re.search(pattern0,content)!= None:
         result = re.findall(pattern, content)
         name = result[0][2]
         ip = result[0][4]
