@@ -15,7 +15,7 @@ denyInterval = 120
 
 def print_line(content):
     if re.search(pattern0,content)!= None:
-        result = re.findall(pattern, content)
+        result = re.findall(pattern1, content)
         name = result[0][2]
         ip = result[0][4]
         time = result[0][0]
