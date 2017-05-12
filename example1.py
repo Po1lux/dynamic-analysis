@@ -1,21 +1,28 @@
 #!/usr/bin/env python
 
 import tail
+import re
+import time
+import urllib2
 
 com = r'(\d{2}:\d{2}:\d{2})[\s\S]*auth-(\w+)[\s\S]*user \'(\w+)\'[\s\S]*auth profile \'(\w+)\'[\s\S]*From: (\d+.\d+.\d+.\d+)'
 pattern = re.compile(com)
 
 ipInfo={}
-denyConut =15
+denyConut =3
 denyInterval = 120
 
 def print_line(content):
     result = re.findall(pattern, content)
-    name = result[0][2]
-    ip = result[0][4]
-    time = result[0][0]
-    state = result[0][1]
-    type = result[0][3]
+    if len(result[0]==5):
+        name = result[0][2]
+        ip = result[0][4]
+        time = result[0][0]
+        state = result[0][1]
+        type = result[0][3]
+    else:
+        return
+
     referIp = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=%s' % ip
     html = urllib2.urlopen(referIp)
     html = h.read()
